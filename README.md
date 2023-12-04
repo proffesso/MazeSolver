@@ -28,8 +28,10 @@ Similar approach with edges: going line by line: if discovered network has a con
 
 ## Path Solving
 
-Path solving algorithm used quite simple (Breadth-first search). 
-Following approach allows solution to be scalable. There is no way to define best distinguish line between scalability and compactness in the tasks, thus implementation partially contains abstractions and some where just less flexible approach.   
+Path solving algorithm used quite simple (Breadth-first search). Implementation targeted possibility to replace algorithm according to the needs. 
+Using algorithms like `A*` could be more official for particular task, but firstly, there is not specified diagonal movements possibility and also design requirements usually going into unpromising one direction and weighed edges and makes `A*` and grid based algorithms useless.
+
+Complexity of implemented the algorithm could vary from O(n) to O(n²) in worst case (had to check all nodes).
 
 ### Lage mazes.
 Steps done for solving lage amount of data:
