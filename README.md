@@ -1,50 +1,83 @@
 # MazeSolver
 
-## Possible inputs:
+## Описание
 
-After run application user will be able to choose a way to enter Maze.
-There are two options: File or Manual input.
+MazeSolver — это приложение для поиска пути в лабиринте, реализованное на C#. Оно позволяет пользователю вводить лабиринт вручную или загружать его из файла, а затем находит кратчайший путь от входа к выходу с помощью алгоритма поиска в ширину (Breadth-first search, BFS). Проект предназначен для демонстрации работы алгоритмов поиска пути и может быть расширен для поддержки других методов.
 
-### File
+## Установка
 
-For file input possible to use existing files :
+1. Клонируйте репозиторий:
+   ```
+   git clone <URL_репозитория>
+   ```
+2. Откройте решение `MazeSolver.sln` в Visual Studio или любой другой IDE, поддерживающей .NET.
+3. Соберите проект (обычно достаточно нажать F5 или выбрать "Build Solution").
 
-* maze_test.txt
-* maze_test_simply.txt
+## Запуск
 
-Those files used for the tests as well.
-For providing files possible to provide absolute or relative path. 
-Relative path in case application looks like:
+1. Запустите приложение из IDE или через командную строку:
+   ```
+   dotnet run --project MazeSolver/MazeSolver.csproj
+   ```
+2. После запуска вам будет предложено выбрать способ ввода лабиринта:
+   - **Файл**: укажите путь к файлу с лабиринтом (например, `maze_test.txt` или `maze_test_simple.txt`). Можно использовать абсолютный или относительный путь, например:
+     ```
+     ../../../../maze_test.txt
+     ```
+   - **Вручную**: введите размер лабиринта и затем строки, представляющие лабиринт (0 — проход, 1 — стена).
 
->../../../../maze_test.txt
+## Пример использования
 
-### Manual
-In case user decided to use manual enter, application will be asking step by step for data, starting from size of the maze and then per line of the 0-s and 1-s representation of the maze.
+### Ввод из файла
 
-## Data preparation
-There are plenty of algorithms for path-finding tasks. I found most common case is a weighed graph, that's why for implementing I did convert entered char matrix into to more flexible graph.
-Algorithm skips wall cells and creates Graph nodes only for open cells.
-Similar approach with edges: going line by line: if discovered network has a connection, then this edges are creating in the graph.     
+1. Подготовьте файл с лабиринтом, например:
+   ```
+   0011111111
+   1000010001
+   1010010101
+   1001010100
+   1001000110
+   ```
+2. Запустите приложение и выберите ввод из файла, указав путь к файлу.
 
-## Path Solving
+### Ввод вручную
 
-Path solving algorithm used quite simple (Breadth-first search). Implementation targeted possibility to replace algorithm according to the needs. 
-Using algorithms like `A*` could be more official for particular task, but firstly, there is not specified diagonal movements possibility and also design requirements usually going into unpromising one direction and weighed edges and makes `A*` and grid based algorithms useless.
+1. Выберите ручной ввод.
+2. Введите размер лабиринта (например, 5).
+3. Введите строки, например:
+   ```
+   00111
+   10001
+   10101
+   10010
+   10010
+   ```
 
-Complexity of implemented the algorithm could vary from O(n) to O(n²) in worst case (had to check all nodes).
+## Подготовка данных
 
-### Lage mazes.
-Steps done for solving lage amount of data:
-* Read data extracted to separate class this allow to free the memory from the Raw data one file processed (garbage collector is not acting here yet, but implementation supports this with just extending `IDataProvider` interface ).
-* Also reading of the data implemented in the line-by-line (supported be interface) that's possible allows to avoid store all file in the memory (not fully implemented reading line-by-line)
-* Storage for algorithm used a List for Nodes and Edges, this is about 2^31 items, could be lower depending on the memory size. 
-* Printing original interfaces are implemented with help of the single mapping between graph nodes Ids and original Maze cell (no need to reread original data again, storing only open cells).  
+Для поиска пути лабиринт преобразуется в граф: стены пропускаются, узлы создаются только для открытых клеток. Связи между узлами формируются по соседству. Это позволяет гибко реализовать различные алгоритмы поиска.
 
-## Multi paths [not implemented] 
+## Алгоритм поиска пути
 
-Multi paths for solving the maze could be done but vary weight of the original graph, that's does not bring any harm to the stored dtaa and no need to back up.
+Используется алгоритм поиска в ширину (BFS), который гарантирует нахождение кратчайшего пути в невзвешенном лабиринте. Архитектура приложения позволяет заменить алгоритм на другой (например, A*), если потребуется.
 
-## Testing
+Сложность алгоритма — от O(n) до O(n²) в худшем случае (при необходимости проверки всех узлов).
 
-There are simple tests in solution. Those tests are covering small part of the solution adding  tests and gathering high code coverage was not priority tasks, but still possible with some efforts
-(improvements are endless possible of course). 
+## Работа с большими лабиринтами
+
+- Чтение данных вынесено в отдельный класс, что позволяет освобождать память после обработки файла.
+- Реализована поддержка построчного чтения данных, чтобы не хранить весь файл в памяти.
+- Для хранения узлов и связей используется список, что позволяет обрабатывать большие лабиринты (до ~2^31 элементов, ограничено памятью).
+- Отображение лабиринта реализовано через отображение идентификаторов узлов на исходные клетки, что позволяет не перечитывать исходные данные.
+
+## Множественные пути [не реализовано]
+
+Поддержка поиска нескольких путей может быть добавлена путем изменения весов графа. Это не требует изменения структуры данных.
+
+## Тестирование
+
+В проекте присутствуют простые тесты, которые покрывают основные сценарии работы приложения. Расширение тестирования и повышение покрытия кода возможно при необходимости.
+
+---
+
+**MazeSolver** — удобный инструмент для изучения алгоритмов поиска пути и работы с лабиринтами. Улучшения и расширения приветствуются!
