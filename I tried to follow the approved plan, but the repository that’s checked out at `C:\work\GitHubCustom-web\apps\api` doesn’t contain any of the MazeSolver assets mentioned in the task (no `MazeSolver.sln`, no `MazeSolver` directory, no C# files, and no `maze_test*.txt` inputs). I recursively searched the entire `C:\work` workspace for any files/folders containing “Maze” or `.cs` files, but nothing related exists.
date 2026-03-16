@@ -1,0 +1,1 @@
+Because the MazeSolver project isn’t present, I can’t inspect `MazeNode`, extend the shared types, add the `AStarPathFinder`, or update the tests/README as requested. If you can provide the repository that actually contains the MazeSolver solution (or point me to the correct path), I’ll be able to continue and implement the A* algorithm per the plan.
