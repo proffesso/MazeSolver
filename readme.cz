@@ -1,0 +1,52 @@
+# MazeSolver
+
+## Možné vstupy:
+
+Po spuštění aplikace si uživatel může zvolit způsob zadání bludiště.
+Existují dvě možnosti: soubor nebo ruční zadání.
+
+### Soubor
+
+Pro vstup ze souboru lze použít existující soubory:
+
+* maze_test.txt
+* maze_test_simply.txt
+
+Tyto soubory se používají také pro testy.
+Pro zadání souboru lze použít absolutní nebo relativní cestu.
+Relativní cesta v aplikaci může vypadat například takto:
+
+>../../../../maze_test.txt
+
+### Ruční zadání
+
+Pokud se uživatel rozhodne pro ruční zadání, aplikace bude krok za krokem vyžadovat data, počínaje velikostí bludiště a poté jednotlivé řádky s reprezentací bludiště pomocí 0 a 1.
+
+## Příprava dat
+
+Existuje mnoho algoritmů pro úlohy hledání cest. Nejčastějším případem je vážený graf, proto je zadaná znaková matice převedena na flexibilnější graf.
+Algoritmus přeskočí stěny a vytváří uzly grafu pouze pro otevřené buňky.
+Podobný přístup se používá u hran: postupně po řádcích se do grafu přidávají hrany, pokud je v síti nalezeno spojení.
+
+## Řešení cesty
+
+Použitý algoritmus pro hledání cesty je jednoduchý (Breadth-first search). Implementace je navržena tak, aby bylo možné algoritmus podle potřeby nahradit.
+Algoritmy jako `A*` mohou být pro konkrétní úlohy efektivnější, ale zde není uvedena možnost diagonálního pohybu a návrhové požadavky obvykle vedou k pohybu jedním směrem a váženým hranám, což činí `A*` a mřížkové algoritmy méně užitečnými.
+
+Složitost implementovaného algoritmu se může lišit od O(n) po O(n²) v nejhorším případě (kdy je třeba zkontrolovat všechny uzly).
+
+### Velká bludiště
+
+Kroky provedené pro zpracování velkého množství dat:
+* Čtení dat bylo přesunuto do samostatné třídy, což umožňuje uvolnit paměť od hrubých dat po zpracování souboru (sběrač odpadu zde zatím nezasahuje, ale implementace to podporuje rozšířením rozhraní `IDataProvider`).
+* Čtení dat je implementováno po řádcích (podporováno rozhraním), což umožňuje potenciálně neukládat celý soubor do paměti (čtení po řádcích není zcela dokončeno).
+* Úložiště pro algoritmus používá seznam (List) pro uzly a hrany, což umožňuje až 2^31 položek, omezených velikostí paměti.
+* Výstup původního rozhraní je implementován pomocí jediného mapování mezi identifikátory uzlů grafu a původními buňkami bludiště (není třeba znovu načítat původní data, ukládají se pouze otevřené buňky).
+
+## Více cest [neimplementováno]
+
+Hledání více cest bludištěm je možné změnou vah původního grafu; nepoškozuje uložená data a není třeba nic zálohovat.
+
+## Testování
+
+V řešení jsou jednoduché testy. Pokrývají malou část řešení; přidání testů a zvýšení pokrytí nebylo prioritou, ale je to možné (pro zlepšení je vždy prostor).
