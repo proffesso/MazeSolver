@@ -28,13 +28,33 @@ Similar approach with edges: going line by line: if discovered network has a con
 
 ## Path Solving
 
-Path solving algorithm used quite simple (Breadth-first search). Implementation targeted possibility to replace algorithm according to the needs. 
-Using algorithms like `A*` could be more official for particular task, but firstly, there is not specified diagonal movements possibility and also design requirements usually going into unpromising one direction and weighed edges and makes `A*` and grid based algorithms useless.
+MazeSolver ships with two algorithms for path solving:
 
-Complexity of implemented the algorithm could vary from O(n) to O(n²) in worst case (had to check all nodes).
+* **Breadth-first search (BFS)** – explores the maze level by level. This is the default strategy used by the console application and guarantees the shortest path when all edges have the same weight.
+* **A\*** – a heuristic-driven search that prioritizes nodes based on the sum of the current path cost and an estimated distance to the goal. Maze nodes now retain their grid coordinates so the default heuristic uses the Manhattan distance, which keeps the search tightly focused on the target.
 
-### Lage mazes.
-Steps done for solving lage amount of data:
+Using A* in code is straightforward:
+
+```csharp
+var (graph, start, end) = mazeWrapper.Read();
+
+// Default Manhattan heuristic (when coordinates are known)
+var path = AStar.Search(graph, start, end);
+
+// Custom heuristic (optional)
+var pathWithCustomHeuristic = AStar.Search(
+    graph,
+    start,
+    end,
+    (current, goal) => Math.Sqrt(
+        Math.Pow(current.Row - goal.Row, 2) + Math.Pow(current.Column - goal.Column, 2))
+);
+```
+
+A* falls back to Dijkstra’s algorithm automatically when node coordinates are unknown (heuristic value `0`), so it remains safe to use with any graph produced by the solver.
+
+### Large mazes.
+Steps done for solving large amount of data:
 * Read data extracted to separate class this allow to free the memory from the Raw data one file processed (garbage collector is not acting here yet, but implementation supports this with just extending `IDataProvider` interface ).
 * Also reading of the data implemented in the line-by-line (supported be interface) that's possible allows to avoid store all file in the memory (not fully implemented reading line-by-line)
 * Storage for algorithm used a List for Nodes and Edges, this is about 2^31 items, could be lower depending on the memory size. 
@@ -48,3 +68,11 @@ Multi paths for solving the maze could be done but vary weight of the original g
 
 There are simple tests in solution. Those tests are covering small part of the solution adding  tests and gathering high code coverage was not priority tasks, but still possible with some efforts
 (improvements are endless possible of course). 
+
+A dedicated `AStarTests` suite now validates correctness on both weighted and unweighted graphs, while `PerformanceTests` exercises the BFS and A* implementations on large grids. Performance-oriented checks are grouped under the `Performance` category and can be executed explicitly with:
+
+```
+dotnet test --filter TestCategory=Performance
+```
+
+Running `dotnet test` without filters will execute the full unit and performance test suites.

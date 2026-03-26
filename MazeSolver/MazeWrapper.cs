@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using MazeSolver.Interfaces;
 using MazeSolver.Models;
 
@@ -44,7 +44,7 @@ public class MazeWrapper
             {
                 if (line[j] == '0') // open
                 {
-                    var node = Graph.AddNode();
+                    var node = Graph.AddNode(i, j);
                     MappingMazeToNode.Add(i * _size.Item2 + j, node.Id);
 
                     if (i > 0 && MappingMazeToNode.TryGetValue((i - 1) * _size.Item2 + j, out int prevI))
