@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using MazeSolver.Interfaces;
 using MazeSolver.Models;
 
@@ -10,6 +10,7 @@ public class MazeWrapper
     private const string REGEX_FOR_MAZE_DEFINITION = "^[01]+$";
 
     private readonly Dictionary<int, int> MappingMazeToNode = new();
+    private readonly Dictionary<int, (int Row, int Col)> _nodeCoordinates = new();
     private readonly Graph Graph = new();
     private (int, int) _size;
 
@@ -17,17 +18,24 @@ public class MazeWrapper
     {
         _dataProvider = dataProvider;
     }
+
+    public IReadOnlyDictionary<int, (int Row, int Col)> NodeCoordinates => _nodeCoordinates;
+
     public (Graph, Node, Node) Read()
     {
-        
+        MappingMazeToNode.Clear();
+        _nodeCoordinates.Clear();
+        Graph.nodes.Clear();
+        Graph.edges.Clear();
+
         _size = _dataProvider.GetSize();
-        
+
         _dataProvider.StartReadData(_size);
-        
+
         int i = 0;
         while (i < _size.Item1)
         {
-            var line = _dataProvider.GetLine(i+1).Trim();
+            var line = _dataProvider.GetLine(i + 1).Trim();
             if (line?.Length != _size.Item2)
             {
                 _dataProvider.ExposeError($"Wrong input: Provided line does not match expected size {_size.Item2}");
@@ -46,6 +54,7 @@ public class MazeWrapper
                 {
                     var node = Graph.AddNode();
                     MappingMazeToNode.Add(i * _size.Item2 + j, node.Id);
+                    _nodeCoordinates[node.Id] = (i, j);
 
                     if (i > 0 && MappingMazeToNode.TryGetValue((i - 1) * _size.Item2 + j, out int prevI))
                     {
