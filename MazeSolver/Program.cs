@@ -1,4 +1,4 @@
-﻿using MazeSolver;
+using MazeSolver;
 using MazeSolver.Interfaces;
 using MazeSolver.Readers;
 
@@ -22,7 +22,7 @@ Console.WriteLine("Maze entering successful");
 Console.WriteLine("-------------------");
 Console.WriteLine("Start searching for path...");
 
-var path = BFS.Search(maze, first, last);
+var path = AStar.Search(maze, first, last);
 
 Console.WriteLine(path == null ? "Path does NOT exist!" : "Path exists!");
 

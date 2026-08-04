@@ -39,5 +39,33 @@ namespace MazeSolver.tests
             Assert.AreEqual(1, graph.edges.Where(x => x.startNode == 2).Count());
             Assert.AreEqual(0, graph.edges.Where(x => x.startNode == 3).Count());
         }
+
+        [Test]
+        public void MazeAStarFindsPathForSimpleMaze()
+        {
+            var dataProvider = new FileDataProvider();
+            dataProvider.FilePath = "../../../../maze_test_simple.txt";
+            var mazeWrapper = new MazeWrapper(dataProvider);
+
+            var (graph, start, end) = mazeWrapper.Read();
+
+            var path = AStar.Search(graph, start, end);
+
+            Assert.IsNotNull(path);
+            Assert.AreEqual(2, path!.Count);
+            Assert.AreEqual(end.Id, path.Last().endNode);
+        }
+
+        [Test]
+        public void MazeAStarReturnsNullWhenPathNotExists()
+        {
+            var graph = new Models.Graph();
+            var n1 = graph.AddNode(0, 0);
+            var n2 = graph.AddNode(1, 1);
+
+            var path = AStar.Search(graph, n1, n2);
+
+            Assert.IsNull(path);
+        }
     }
 }

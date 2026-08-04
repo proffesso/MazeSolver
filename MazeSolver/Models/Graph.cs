@@ -1,4 +1,4 @@
-﻿namespace MazeSolver.Models
+namespace MazeSolver.Models
 {
     public class Graph
     {
@@ -19,8 +19,16 @@
 
         public Node AddNode()
         {
-            var nodeId = nodes.Count; 
-            var node = new Node() {Id = nodeId, Connections = new List<int>()};
+            var nodeId = nodes.Count;
+            var node = new Node() { Id = nodeId, Connections = new List<int>(), Row = 0, Col = 0 };
+            nodes.Add(node);
+            return node;
+        }
+
+        public Node AddNode(int row, int col)
+        {
+            var nodeId = nodes.Count;
+            var node = new Node() { Id = nodeId, Connections = new List<int>(), Row = row, Col = col };
             nodes.Add(node);
             return node;
         }
@@ -39,7 +47,7 @@
             var graph = new Graph();
             foreach (var item in nodes)
             {
-                graph.AddNode();
+                graph.AddNode(item.Row, item.Col);
             }
 
             foreach (var edge in this.edges)
